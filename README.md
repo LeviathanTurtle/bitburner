@@ -10,6 +10,8 @@ These are my own words and my understanding (which could be wrong), so if you ar
 - https://github.com/bitburner-official/bitburner-src (this is also the source repository)
 - https://bitburner.readthedocs.io/en/latest/index.html
 
+The game also offers different types of minigames to accomplish tasks for more money, but I have not explored those yet.
+
 After reading the in-game documentation (highly recommended), I took some of the code provided in it. I started with that, then as I learned I started to develop my own scripts. This repository is just a collection of the scripts I've made while playing the game. This is in its own mini repository because I felt that it didn't fit in my other repositories. 
 
 # TO DO:
