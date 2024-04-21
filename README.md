@@ -7,7 +7,7 @@ The basic premise is to gain money by hacking servers (or other ways). Hacking a
 - `ns.weaken()` -- weaken the server's security, making it easier to hack the next time
 - `ns.grow()` -- inflate the funds on the server, giving the server more money for you to hack
 These are my own words and my understanding (which could be wrong), so if you are at all confused, I encourage you to read the documentation found in game or from the following sources:
-- https://github.com/bitburner-official/bitburner-src (this is also the source repository)
+- https://github.com/bitburner-official/bitburner-src
 - https://bitburner.readthedocs.io/en/latest/index.html
 
 The game also offers different types of minigames to accomplish tasks for more money, but I have not explored those yet.
