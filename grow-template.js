@@ -7,8 +7,8 @@ export async function main(ns, target) {
   target = ns.args.length > 0 ? ns.args[0] : ns.getHostname();
 
   // Defines how much money a server should have before we hack it
-  // In this case, it is set to the maximum amount of money.
-  const moneyThresh = ns.getServerMaxMoney(target);
+  // In this case, it is set to 75% of the maximum amount of money.
+  const moneyThresh = ns.getServerMaxMoney(target)*.75;
 
   // If we have the BruteSSH.exe program, use it to open the SSH Port
   // on the target server
