@@ -27,16 +27,38 @@ export async function main(ns/*, affected_servers*/) {
                      "omega-net",        // 32 GB
                      "silver-helix",     // 64 GB
                      "the-hub",          // 8 GB
-                     "johnson-ortho",    // 0? GB
-                     "crush-fitness",    // 0? GB
+                     "johnson-ortho",    // 0 GB
+                     "crush-fitness",    // 0 GB
                      "netlink",          // 64 GB
-                     "computek",         // 0? GB
+                     "computek",         // 0 GB
                      "summit-uni",       // 64 GB
                      "catalyst",         // 64 GB
                      "rothman-uni",      // 32 GB
-                     "syscore",          // 0? GB
-                     "zb-institute"      // 64 GB
-                     ];          
+                     "syscore",          // 0 GB
+                     "zb-institute",     // 128 GB
+                     "millenium-fitness",// 32 GB
+                     "rho-construction", // 64 GB
+                     "lexo-corp",        // 64 GB
+                     "aevum-police",     // 64 GB
+                     "zb-def",           // 0 GB
+                     "nova-med",         // 0 GB
+                     "unitalife",        // 32 GB
+                     "univ-energy",      // 16 GB
+                     "global-pharm",     // 8 GB
+                     "alpha-ent",        // 64 GB
+                     "snap-fitness",     // 0 B
+                     "galactic-cyber",   // 0 GB
+                     "aerocorp",         // 0 GB
+                     "omnia",            // 16 GB
+                     "defcomm",          // 0 GB
+                     "icarus",           // 0 GB
+                     "solaris",          // 16 GB
+                     "infocomm",         // 0 GB
+                     "taiyang-digital",  // 0 GB
+                     "deltaone",         // 0 GB
+                     "zeus-med"          // 0 GB
+    ];
+
 
     // calculate total script ram usage
     let ram_req = 0;
