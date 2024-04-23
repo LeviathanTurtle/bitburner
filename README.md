@@ -19,3 +19,4 @@ After reading the in-game documentation (highly recommended), I took some of the
 - in `script_startup.js`, reduce the number of for-loops
 - return an array of servers affected in `script_startup.js` to be used with `home-script_startup.js`
 - incorporate `no-ram-script_startup.js` into `master.js`
+- output log statements to separate files
