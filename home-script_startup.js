@@ -85,7 +85,7 @@ export async function main(ns/*, affected_servers*/) {
         await ns.sleep(2000);
 
         // check for current hack level vs. server
-        if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
+        if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv) || !ns.hasRootAccess(serv)) {
           ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
           hackable = false;
         }
