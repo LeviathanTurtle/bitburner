@@ -38,11 +38,21 @@ const servers = ["n00dles",
                  "lexo-corp",
                  "unitalife",
                  "univ-energy",
+//                 run4theh111z,        faction
+                 ".",
 
 // 5 port --------------------------------------
                  "zb-institute",
                  "omnia",
-                 "solaris"
+                 "solaris",
+                 "vitalife",
+                 "blade",
+                 "titan-labs",
+                 "fulcrumtech",
+                 "microdyne",
+                 "powerhouse-fitness",
+                 "helios",
+                 "omnitek"
 ];
 
 
@@ -60,5 +70,16 @@ const servers_no_ram = ["johnson-ortho",
                         "zeus-med",
                         "defcomm",
                         "taiyang-digital",
-                        "infocomm"
+                        "infocomm",
+                        "applied-energistics",
+                        "kuai-gong",
+                        "stormtech,
+                        "nwo",
+                        "clarkinc"
+                        "fulcrumassets",
+                        "megacorp",
+//                        "The-Cave",           faction
+                        "b-and-a",
+                        "ecorp",
+                        "4sigma"
 ];
