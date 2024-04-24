@@ -12,7 +12,7 @@ export async function main(ns) {
                      "neo-net",
                      "zer0",
                      "iron-gym",
- //                    "CSEC",
+//                     "CSEC",
                      "phantasy",
                      "omega-net",
                      "silver-helix",
@@ -27,8 +27,29 @@ export async function main(ns) {
 //                     "I.I.I.I",
                      "rothman-uni",
 //                     "syscore",
-                     "zb-institute"
-                     ];
+                     "zb-institute",
+                     "lexo-corp",
+                     "aevum-police",
+                     "millenium-fitness",
+//                     "galactic-cyber",
+//                     "aerocorp",
+                     "omnia",
+//                     "defcomm",
+//                     "icarus",
+//                     "zb-def",
+//                     "nova-med",
+                     "unitalife",
+                     "univ-energy",
+                     "solaris",
+//                     "infocomm",
+//                     "taiyang-digital",
+                     "global-pharm",
+//                     "deltaone",
+//                     "zeus-med",
+                     "alpha-ent",
+                     "rho-construction",
+//                     "snap-fitness"
+    ];
 
     for (let i = 0; i < servers.length; ++i) {
       // these are in if statements to avoid deleting files
