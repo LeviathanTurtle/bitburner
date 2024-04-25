@@ -2,5 +2,5 @@ n00dles,foodnstuff,sigma-cosmetics,joesguns,nectar-net,hong-fang-tea,harakiri-su
 max-hardware,neo-net,zer0,iron-gym
 phantasy,omega-net,silver-helix,the-hub
 netlink,summit-uni,catalyst,rothman-uni,millenium-fitness,rho-construction
-lexo-corp,aevum-police,unitalife,univ-energy,global-pharm,alpha-ent,.
+lexo-corp,aevum-police,unitalife,univ-energy,global-pharm,alpha-ent,
 zb-institute,omnia,solaris,vitalife,blade,titan-labs,fulcrumtech,microdyne,powerhouse-fitness,helios,omnitek
