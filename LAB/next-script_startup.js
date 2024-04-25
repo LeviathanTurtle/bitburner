@@ -28,15 +28,12 @@ export async function main(ns) {
   // read contents of the server list file
   const fileContents = ns.read('servers.txt');
   // split the file contents into lines
-  const serverLines = fileContents.split('\n');
-  // flatten the resulting arrays into MASTER SERVER ARRAY
-  const servers = serverLines.flatMap(line => line.split(','));
+  const servers = fileContents.trim().split('\n');
 
 
 
   // copy scripts to server, get root access, and execute files on max threads
-  for (let i = 0; i < servers.length; ++i) {
-      const serv = servers[i];
+  for (const serv of servers) {
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
       // bool to determine if the current server is hackable
