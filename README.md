@@ -14,6 +14,10 @@ The game also offers different types of minigames to accomplish tasks for more m
 
 After reading the in-game documentation (highly recommended), I took some of the code provided in it. I started with that, then as I learned I started to develop my own scripts. This repository is just a collection of the scripts I've made while playing the game. This is in its own mini repository because I felt that it didn't fit in my other repositories. 
 
+## DIRECTORIES:
+- LAB: a sort of 'staging' folder where changes are made
+- Archive: old files that have been improved or no longer used
+
 # TO DO:
 - offload `files` array to separate file, and use I/O in scripts
 - incorporate `no-ram-script_startup.js` into `master.js`
