@@ -7,7 +7,6 @@
 // 128 GB : 22 threads each (1.5 free)
 // 256 GB : 
 
-// ADD RETURN servers_affected
 export async function main(ns) {
   // array of main files to copy and use
   const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
@@ -19,101 +18,25 @@ export async function main(ns) {
   let affect_server_count = 0;
 
   // calculate total script ram usage
-  let ram_req = 0;
-  for (let i=0; i < files.length; ++i) {
-    ram_req += ns.getScriptRam(files[i]);
-  }
-  //ns.tprint(`total script ram required: ${ram_req}\n\n`);
+  //let ram_req = 0;
+  //for (let i=0; i < files.length; ++i) {
+  //  ram_req += ns.getScriptRam(files[i]);
+  //}
+  let ram_req = files.reduce((total, file) => total + ns.getScriptRam(file), 0);
+  ns.tprint(`total script ram required: ${ram_req}\n\n`);
 
-  // bool var for determining if malicious programs exist yet
-  //let first = true;
-
-  // Array of all servers that don't need any ports opened
-  // to gain root access.
-  const servers0Port = ["n00dles",          // 4 GB
-                        "foodnstuff",       // 16 GB
-                        "sigma-cosmetics",  // 16 GB
-                        "joesguns",         // 16 GB
-                        "nectar-net",       // 16 GB
-                        "hong-fang-tea",    // 16 GB
-                        "harakiri-sushi"    // 16 GB
-  ];
-
-  // Array of all servers that only need 1 port opened
-  // to gain root access.
-  const servers1Port = ["max-hardware",     // 32 GB
-                        "neo-net",          // 32 GB
-                        "zer0",             // 32 GB
-                        "iron-gym"          // 32 GB
-//                          "CSEC"              // 8 GB
-  ];
-  
-  // Array of all servers that only need 2 ports opened
-  // to gain root access.
-  const servers2Port = ["phantasy",         // 32 GB
-                        "omega-net",        // 32 GB
-                        "silver-helix",     // 64 GB
-                        "the-hub",          // 8 GB
-//                          "avmnite-02h",      // 64 GB
-//                          "johnson-ortho",    // 0 GB
-//                          "crush-fitness"];   // 0 GB
-                        "zb-institute"      // 128 GB
-  ];
-  
-  // Array of all servers that only need 3 ports opened
-  // to gain root access.
-  const servers3Port = ["netlink",          // 64 GB
-//                          "computek",         // 0 GB
-                        "summit-uni",       // 64 GB
-                        "catalyst",         // 64 GB
-//                          "I.I.I.I",          // 256 GB
-                        "rothman-uni",      // 32 GB
-                        "millenium-fitness",// 32 GB
-                        "rho-construction"  // 64 GB
-  ];
-
-  // Array of all servers that only need 4 ports opened
-  // to gain root access.
-  const servers4Port = [//"syscore"         // 0 GB
-                        "lexo-corp",      // 64 GB
-                        "aevum-police",   // 64 GB
-//                          "zb-def",         // 0 GB
-//                          "nova-med",       // 0 GB
-                        "unitalife",      // 32 GB
-                        "univ-energy",    // 16 GB
-                        "global-pharm",   // 8 GB
-                        "alpha-ent"       // 64 GB
-//                          "snap-fitness",   // 0 B
-  ];
-  
-  // Array of all servers that only need 5 ports opened
-  // to gain root access.
-  const servers5Port = ["zb-institute",   // 64 GB
-//                          "galactic-cyber", // 0 GB
-//                          "aerocorp",       // 0 GB
-                        "omnia",          // 16 GB
-//                          "defcomm",        // 0 GB
-//                          "icarus",         // 0 GB
-                        "solaris"         // 16 GB
-//                          "infocomm",       // 0 GB
-//                          "taiyang-digital",// 0 GB
-//                          "deltaone",       // 0 GB
-//                          "zeus-med",       // 0 GB
-  ];
-
-  // MAJOR NOTE: this can all be grouped together into one 
-  // big for loop thanks to checks like 
-  // ns.getServerNumPortsRequired(serv). I am not doing that
-  // because I do not care enough to do so right now. 
+  // read contents of the server list file
+  const fileContents = ns.read('servers.txt');
+  // split the file contents into lines
+  const serverLines = fileContents.split('\n');
+  // flatten the resulting arrays into MASTER SERVER ARRAY
+  const servers = serverLines.flatMap(line => line.split(','));
 
 
 
-  //ns.tprint("Beginning main loop - 0 port");
-  // Copy our scripts onto each server that requires 0 ports to gain
-  // root access. Then use nuke() to gain admin access and run the
-  // scripts.
-  for (let i = 0; i < servers0Port.length; ++i) {
-      const serv = servers0Port[i];
+  // copy scripts to server, get root access, and execute files on max threads
+  for (let i = 0; i < servers.length; ++i) {
+      const serv = servers[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
       // bool to determine if the current server is hackable
@@ -135,39 +58,48 @@ export async function main(ns) {
 
       if (hackable) {
         switch (serv) {
+            // n00dles is a baby server (4 GB RAM) so use early-hack-template instead
             case "n00dles":
-              //await copyFiles(ns, "early-hack-template.js", serv);
+              // copy file to server
               ns.scp("early-hack-template.js",serv);
 
-              //ns.nuke(serv);
+              // if we don't have root access, fix that
               if (!ns.hasRootAccess(serv)) {
                 await access(ns,serv,ns.getServerNumPortsRequired(serv));
-              }
+              } // there's no nested `if` here because this should always 
 
+              // launch scripts on server
               ns.tprint(`Launching script 'early-hack-template.js' on ${serv} with 1 thread`);
               ns.exec("early-hack-template.js", serv);
               ns.tprint(`early-hack-template.js successfully running on ${serv}\n\n`);
+
+              // increment affected servers counter
               affect_server_count++;
+              // add to list of affected servers
               affected_servers.push(serv);
 
               break;
             
+            // literally anything else
             default:
-              //await copyFiles(ns, files, serv);
+              // copy file to server
               if (ns.scp(files,serv)) {
                 ns.tprint(`copied files to ${serv}`);
               } else {
                 ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
               }
-              //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
               // check that we have root access
               if (!ns.hasRootAccess(serv)) {
-                await access(ns,serv,ns.getServerNumPortsRequired(serv));
+                if (!await access(ns,serv,ns.getServerNumPortsRequired(serv))) {
+                  ns.tprint(`Affected servers: ${affect_server_count}`);
+                  return affected_servers;
+                }
               }
 
               // if we have a valid thread count, proceed as normal
               if (threads > 0) {
+                  // execute scripts
                   ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
                   await ns.sleep(1000);
                   await execFiles(ns, files, serv, threads);
@@ -178,391 +110,18 @@ export async function main(ns) {
 
                   ns.tprint(`All files successfully running on ${serv}\n\n`);
               } else { // not a valid thread count, cannot proceed
-                ns.tprint(`Files not running on ${serv}\n\n`);
+                ns.tprint(`Files not running on ${serv} due to invalid thread count (<= 0)\n\n`);
               }
           }
       }
   }
 
-
-  
-  // Wait until we acquire the "BruteSSH.exe" program
-  //while (!ns.fileExists("BruteSSH.exe", "home")) {
-  //    if (first) {
-  //      ns.tprint("Sleeping until BruteSSH.exe exists...");
-  //      first = false;
-  //    }
-  //    await ns.sleep(60000);
-  //}
-  //first = true;
-  // IF VARIANT
-  if (!ns.fileExists("BruteSSH.exe", "home")) {
-      ns.tprint("File BruteSSH.exe does not exist.");
-      ns.tprint(`Affected servers: ${affect_server_count}`);
-      return affected_servers;
-  }
-
-
-
-  //ns.tprint("Beginning main loop - 1 port");
-  // Copy our scripts onto each server that requires 1 port and 32 GB
-  // to gain root access. Then use brutessh() and nuke() to gain
-  // admin access and run the scripts.
-  for (let i = 0; i < servers1Port.length; ++i) {
-      const serv = servers1Port[i];
-      // calculate max threads
-      let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      // bool to determine if the current server is hackable
-      let hackable = true;
-
-      // announce this portion
-      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
-      await ns.sleep(2000);
-
-      // check for current hack level vs. server
-      if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-        ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        hackable = false;
-      }
-      // WHILE OPTION FOR SLEEPING INSTEAD
-      //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-      //  await ns.sleep(60000);
-      //}
-
-      if (hackable) {
-        if (ns.scp(files,serv)) {
-          ns.tprint(`copied files to ${serv}`);
-        } else {
-          ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
-        }
-        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
-
-        //ns.tprint(`BruteSSH-ing ${serv} in 3s...`);
-        //await ns.sleep(3000);
-        //ns.brutessh(serv);
-        //ns.tprint(`Nuking ${serv} in 3s...`);
-        //await ns.sleep(3000);
-        //ns.nuke(serv);
-        if (!ns.hasRootAccess(serv)) {
-          await access(ns,serv,ns.getServerNumPortsRequired(serv));
-        }
-
-        // if we have a valid thread count, proceed as normal
-        if (threads > 0) {
-            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
-            await ns.sleep(1000);
-            await execFiles(ns, files, serv, threads);
-
-            // update affected server list and count
-            affect_server_count++;
-            affected_servers.push(serv);
-
-            ns.tprint(`All files successfully running on ${serv}\n\n`);
-        } else { // not a valid thread count, cannot proceed
-          ns.tprint(`Files not running on ${serv}\n\n`);
-        }
-      }
-  }
-
-
-  
-  // Wait until we acquire the "FTPCrack.exe" program
-  //while (!ns.fileExists("FTPCrack.exe", "home")) {
-  //    if (first) {
-  //      ns.tprint("Sleeping until FTPCrack.exe exists...");
-  //      first = false;
-  //    }
-  //    await ns.sleep(60000);
-  //}
-  //first = true;
-  // IF VARIANT
-  if (!ns.fileExists("FTPCrack.exe", "home")) {
-      ns.tprint("File FTPCrack.exe does not exist.");
-      ns.tprint(`Affected servers: ${affect_server_count}`);
-      return affected_servers;
-  }
-
-
-
-  //ns.tprint("Beginning main loop - 2 port");
-  // Copy our scripts onto each server that requires 2 ports to gain
-  // root access. Then use brutessh() and nuke() and ftpcrack() to
-  // gain admin access and run the scripts.
-  for (let i = 0; i < servers2Port.length; ++i) {
-      const serv = servers2Port[i];
-      // calculate max threads
-      let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      // bool to determine if the current server is hackable
-      let hackable = true;
-
-      // announce this portion
-      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
-      await ns.sleep(2000);
-
-      // check for current hack level vs. server
-      if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-        ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        hackable = false;
-      }
-      // WHILE OPTION FOR SLEEPING INSTEAD
-      //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-      //  await ns.sleep(60000);
-      //}
-
-      if (hackable) {
-        if (ns.scp(files,serv)) {
-          ns.tprint(`copied files to ${serv}`);
-        } else {
-          ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
-        }
-        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
-
-        if (!ns.hasRootAccess(serv)) {
-          await access(ns,serv,ns.getServerNumPortsRequired(serv));
-        }
-
-        // if we have a valid thread count, proceed as normal
-        if (threads > 0) {
-            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
-            await ns.sleep(1000);
-            await execFiles(ns, files, serv, threads);
-
-            // update affected server list and count
-            affect_server_count++;
-            affected_servers.push(serv);
-
-            ns.tprint(`All files successfully running on ${serv}\n\n`);
-        } else { // not a valid thread count, cannot proceed
-          ns.tprint(`Files not running on ${serv}\n\n`);
-        }
-      }
-  }
-
-
-
-  // Wait until we acquire the "RelaySMTP.exe" program
-  //while (!ns.fileExists("RelaySMTP.exe", "home")) {
-  //    if (first) {
-  //      ns.tprint("Sleeping until RelaySMTP.exe exists...");
-  //      first = false;
-  //    }
-  //    await ns.sleep(60000);
-  //}
-  //first = true;
-  // IF VARIANT
-  if (!ns.fileExists("RelaySMTP.exe", "home")) {
-      ns.tprint("File RelaySMTP.exe does not exist.");
-      ns.tprint(`Affected servers: ${affect_server_count}`);
-      return affected_servers;
-  }
-
-
-
-  //ns.tprint("Beginning main loop - 3 port");
-  // Copy our scripts onto each server that requires 3 ports to gain
-  // root access. Then use ftpcrack(), brutessh(), relaysmtp, and
-  // nuke() to gain admin access and run the scripts.
-  for (let i = 0; i < servers3Port.length; ++i) {
-      const serv = servers3Port[i];
-      // calculate max threads
-      let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      // bool to determine if the current server is hackable
-      let hackable = true;
-
-      // announce this portion
-      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
-      await ns.sleep(2000);
-
-      // check for current hack level vs. server
-      if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-        ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        hackable = false;
-      }
-      // WHILE OPTION FOR SLEEPING INSTEAD
-      //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-      //  await ns.sleep(60000);
-      //}
-
-      if (hackable) {
-        if (ns.scp(files,serv)) {
-          ns.tprint(`copied files to ${serv}`);
-        } else {
-          ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
-        }
-        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
-
-        if (!ns.hasRootAccess(serv)) {
-          await access(ns,serv,ns.getServerNumPortsRequired(serv));
-        }
-
-        // if we have a valid thread count, proceed as normal
-        if (threads > 0) {
-            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
-            await ns.sleep(1000);
-            await execFiles(ns, files, serv, threads);
-
-            // update affected server list and count
-            affect_server_count++;
-            affected_servers.push(serv);
-
-            ns.tprint(`All files successfully running on ${serv}\n\n`);
-        } else { // not a valid thread count, cannot proceed
-          ns.tprint(`Files not running on ${serv}\n\n`);
-        }
-      }
-  }
-
-
-
-  // Wait until we acquire the "HTTPWorm.exe" program
-  //while (!ns.fileExists("HTTPWorm.exe", "home")) {
-  //    if (first) {
-  //      ns.tprint("Sleeping until HTTPWorm.exe exists...");
-  //      first = false;
-  //    }
-  //    await ns.sleep(60000);
-  //}
-  //first = true;
-  // IF VARIANT
-  if (!ns.fileExists("HTTPWorm.exe", "home")) {
-      ns.tprint("File HTTPWorm.exe does not exist.");
-      ns.tprint(`Affected servers: ${affect_server_count}`);
-      return affected_servers;
-  }
-
-
-
-  //ns.tprint("Beginning main loop - 4 port");
-  // Copy our scripts onto each server that requires 3 ports to gain
-  // root access. Then use ftpcrack(), brutessh(), relaysmtp(),
-  // httpworm(), and nuke() to gain admin access and run the scripts.
-  for (let i = 0; i < servers4Port.length; ++i) {
-      const serv = servers4Port[i];
-      // calculate max threads
-      let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      // bool to determine if the current server is hackable
-      let hackable = true;
-
-      // announce this portion
-      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
-      await ns.sleep(2000);
-
-      // check for current hack level vs. server
-      if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-        ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        hackable = false;
-      }
-      // WHILE OPTION FOR SLEEPING INSTEAD
-      //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-      //  await ns.sleep(60000);
-      //}
-
-      if (hackable) {
-        if (ns.scp(files,serv)) {
-          ns.tprint(`copied files to ${serv}`);
-        } else {
-          ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
-        }
-        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
-
-        if (!ns.hasRootAccess(serv)) {
-          await access(ns,serv,ns.getServerNumPortsRequired(serv));
-        }
-
-        // if we have a valid thread count, proceed as normal
-        if (threads > 0) {
-            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
-            await ns.sleep(1000);
-            await execFiles(ns, files, serv, threads);
-
-            // update affected server list and count
-            affect_server_count++;
-            affected_servers.push(serv);
-
-            ns.tprint(`All files successfully running on ${serv}\n\n`);
-        } else { // not a valid thread count, cannot proceed
-          ns.tprint(`Files not running on ${serv}\n\n`);
-        }
-      }
-  }
-
-
-
-  // Wait until we acquire the "SQLInject.exe" program
-  //while (!ns.fileExists("SQLInject.exe", "home")) {
-  //    if (first) {
-  //      ns.tprint("Sleeping until SQLInject.exe exists...");
-  //      first = false;
-  //    }
-  //    await ns.sleep(60000);
-  //}
-  //first = true;
-  // IF VARIANT
-  if (!ns.fileExists("SQLInject.exe", "home")) {
-      ns.tprint("File SQLInject.exe does not exist.");
-      ns.tprint(`Affected servers: ${affect_server_count}`);
-      return affected_servers;
-  }
-
-
-
-  //ns.tprint("Beginning main loop - 5 port");
-  // Copy our scripts onto each server that requires 3 ports to gain
-  // root access. Then use ftpcrack(), brutessh(), relaysmtp, and
-  // nuke() to gain admin access and run the scripts.
-  for (let i = 0; i < servers5Port.length; ++i) {
-      const serv = servers5Port[i];
-      // calculate max threads
-      let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      // bool to determine if the current server is hackable
-      let hackable = true;
-
-      // announce this portion
-      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
-      await ns.sleep(2000);
-
-      // check for current hack level vs. server
-      if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-        ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        hackable = false;
-      }
-      // WHILE OPTION FOR SLEEPING INSTEAD
-      //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-      //  await ns.sleep(60000);
-      //}
-
-      if (hackable) {
-        if (ns.scp(files,serv)) {
-          ns.tprint(`copied files to ${serv}`);
-        } else {
-          ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
-        }
-        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
-
-        if (!ns.hasRootAccess(serv)) {
-          await access(ns,serv,ns.getServerNumPortsRequired(serv));
-        }
-
-        // if we have a valid thread count, proceed as normal
-        if (threads > 0) {
-            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
-            await ns.sleep(1000);
-            await execFiles(ns, files, serv, threads);
-
-            // update affected server list and count
-            affect_server_count++;
-            affected_servers.push(serv);
-
-            ns.tprint(`All files successfully running on ${serv}\n\n`);
-        } else { // not a valid thread count, cannot proceed
-          ns.tprint(`Files not running on ${serv}\n\n`);
-        }
-      }
-  }
-
   ns.tprint("DONE -- copying/executing scripts");
   ns.tprint(`Affected servers: ${affect_server_count}`);
-  return affected_servers;
+
+  // output to file here
+
+  return;
 }
 
 
@@ -595,112 +154,60 @@ async function execFiles(ns, files, target, threads) {
 
 
 async function access(ns, server, num_ports) {
-  return new Promise(async resolve => {
-      switch (num_ports) {
-          case 0:
-              ns.tprint(`Nuking ${server} in 3s...`);
-              await ns.sleep(3000);
-              ns.nuke(server);
+    // array of required programs
+    const programs = [
+        "BruteSSH.exe",
+        "FTPCrack.exe",
+        "RelaySMTP.exe",
+        "HTTPWorm.exe",
+        "SQLInject.exe"
+    ];
 
-              resolve(true);
-              break;
-          case 1:
-              ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.brutessh(server);
-              
-              ns.tprint(`Nuking ${server} in 3s...`);
-              await ns.sleep(3000);
-              ns.nuke(server);
+    // iterate over the programs up to the number of ports required
+    for (let i = 0; i < num_ports; i++) {
+        const program = programs[i];
+        // check if the required program exists
+        if (!ns.fileExists(program, "home")) {
+            ns.tprint(`Required program ${program} not found.`);
+            return false;
+        }
+        // execute the corresponding program
+        switch (program) {
+            case "BruteSSH.exe":
+                ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(1000);
+                ns.brutessh(server);
+                break;
 
-              resolve(true);
-              break;
-          case 2:
-              ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.ftpcrack(server);
+            case "FTPCrack.exe":
+                ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(1000);
+                ns.ftpcrack(server);
+                break;
 
-              ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.brutessh(server);
+            case "RelaySMTP.exe":
+                ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(1000);
+                ns.relaysmtp(server);
+                break;
 
-              ns.tprint(`Nuking ${server} in 3s...`);
-              await ns.sleep(3000);
-              ns.nuke(server);
+            case "HTTPWorm.exe":
+                ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(1000);
+                ns.httpworm(server);
+                break;
 
-              resolve(true);
-              break;
-          case 3:
-              ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.relaysmtp(server);
-              
-              ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.ftpcrack(server);
+            case "SQLInject.exe":
+                ns.tprint(`SQLInject-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(1000);
+                ns.sqlinject(server);
+                break;
+        }
+    }
 
-              ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.brutessh(server);
-
-              ns.tprint(`Nuking ${server} in 3s...`);
-              await ns.sleep(3000);
-              ns.nuke(server);
-
-              resolve(true);
-              break;
-          case 4:
-              ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.httpworm(server);
-
-              ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.relaysmtp(server);
-              
-              ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.ftpcrack(server);
-
-              ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.brutessh(server);
-
-              ns.tprint(`Nuking ${server} in 3s...`);
-              await ns.sleep(3000);
-              ns.nuke(server);
-
-              resolve(true);
-              break;
-          case 5:
-              ns.tprint(`SQLInject-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.sqlinject(server);
-              
-              ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.httpworm(server);
-
-              ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.relaysmtp(server);
-              
-              ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.ftpcrack(server);
-
-              ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 3s...`);
-              await ns.sleep(3000);
-              ns.brutessh(server);
-
-              ns.tprint(`Nuking ${server} in 3s...`);
-              await ns.sleep(3000);
-              ns.nuke(server);
-
-              resolve(true);
-              break;
-      }
-  });
-
-  // I think this can also be reduced
+    // 
+    ns.tprint(`Nuking ${server} in 1s...`);
+    await ns.sleep(1000);
+    ns.nuke(server);
+    return true;
 }
