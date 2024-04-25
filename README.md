@@ -15,8 +15,12 @@ The game also offers different types of minigames to accomplish tasks for more m
 After reading the in-game documentation (highly recommended), I took some of the code provided in it. I started with that, then as I learned I started to develop my own scripts. This repository is just a collection of the scripts I've made while playing the game. This is in its own mini repository because I felt that it didn't fit in my other repositories. 
 
 # TO DO:
-- offload `servers` and `files` arrays to separate files, and use I/O in scripts
-- in `script_startup.js`, reduce the number of for-loops
-- return an array of servers affected in `script_startup.js` to be used with `home-script_startup.js`
+- offload `files` array to separate file, and use I/O in scripts
 - incorporate `no-ram-script_startup.js` into `master.js`
 - output log statements to separate files
+
+# DONE:
+- offload `servers` array to separate file (data file) and updated `script_startup.js` to read input from file (4.24.2024)
+- in `script_startup.js`, reduce the number of for-loops (4.24.2024)
+- ADAPTATION: return an array of servers affected in `script_startup.js` to be used with `home-script_startup.js`
+    - Instead, output affected servers to an `affected_servers` data file, to be read in `home-script_startup.js` (In progress)
