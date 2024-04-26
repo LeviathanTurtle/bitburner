@@ -20,7 +20,6 @@ After reading the in-game documentation (highly recommended), I took some of the
 
 # TO DO:
 - offload `files` array to separate file, and use I/O in scripts
-- incorporate `no-ram-script_startup.js` into `master.js`
 - output log statements to separate files
 
 # DONE:
@@ -28,3 +27,5 @@ After reading the in-game documentation (highly recommended), I took some of the
 - in `script_startup.js`, reduce the number of for-loops (4.24.2024)
 - ADAPTATION: return an array of servers affected in `script_startup.js` to be used with `home-script_startup.js`
     - Instead, output affected servers to an `affected_servers` data file, to be read in `home-script_startup.js` (In progress)
+- ADAPTATION: incorporate `no-ram-script_startup.js` into `master.js`
+    - Instead, added servers with no ram to list of servers used by `home-script_startup.js`
