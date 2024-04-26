@@ -47,7 +47,7 @@ const servers4Port = [//"syscore"              // 0 GB
                       "alpha-ent",           // 64 GB
 //                    "snap-fitness",          // 0 GB
 //    faction           "run4theh111z",        // 64 GB
-                      "."
+                      "."                    // 16 GB -- no $
 ];
 
 const servers5Port = ["zb-institute",      // 64 GB
