@@ -23,17 +23,23 @@ export async function main(ns) {
   //  ram_req += ns.getScriptRam(files[i]);
   //}
   let ram_req = files.reduce((total, file) => total + ns.getScriptRam(file), 0);
-  ns.tprint(`total script ram required: ${ram_req}\n\n`);
+  //ns.tprint(`total script ram required: ${ram_req}\n\n`);
 
   // read contents of the server list file
   const fileContents = ns.read('servers.txt');
   // split the file contents into lines
-  const servers = fileContents.trim().split('\n');
+  const servers = fileContents
+      .split('\n') // split up each line
+      .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
+      .filter(line => line.length > 0); // remove empty lines
+  //ns.tprint(servers);
 
 
 
   // copy scripts to server, get root access, and execute files on max threads
   for (const serv of servers) {
+  //for (let i = 0; i < servers.length; ++i) {
+      //const serv = servers[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
       // bool to determine if the current server is hackable
