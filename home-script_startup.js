@@ -12,59 +12,32 @@ export async function main(ns/*, affected_servers*/) {
     const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
     //ns.tprint(`TEST: ns.getHostName = ${ns.getHostname()}`);
 
-    // Array of all servers
-    const servers = ["foodnstuff",       // 16 GB
-                     "sigma-cosmetics",  // 16 GB
-                     "joesguns",         // 16 GB
-                     "nectar-net",       // 16 GB
-                     "hong-fang-tea",    // 16 GB
-                     "harakiri-sushi",   // 16 GB
-                     "max-hardware",     // 32 GB
-                     "neo-net",          // 32 GB
-                     "zer0",             // 32 GB
-                     "iron-gym",         // 32 GB
-                     "phantasy",         // 32 GB
-                     "omega-net",        // 32 GB
-                     "silver-helix",     // 64 GB
-                     "the-hub",          // 8 GB
-                     "johnson-ortho",    // 0 GB
-                     "crush-fitness",    // 0 GB
-                     "netlink",          // 64 GB
-                     "computek",         // 0 GB
-                     "summit-uni",       // 64 GB
-                     "catalyst",         // 64 GB
-                     "rothman-uni",      // 32 GB
-                     "syscore",          // 0 GB
-                     "zb-institute",     // 128 GB
-                     "millenium-fitness",// 32 GB
-                     "rho-construction", // 64 GB
-                     "lexo-corp",        // 64 GB
-                     "aevum-police",     // 64 GB
-                     "zb-def",           // 0 GB
-                     "nova-med",         // 0 GB
-                     "unitalife",        // 32 GB
-                     "univ-energy",      // 16 GB
-                     "global-pharm",     // 8 GB
-                     "alpha-ent",        // 64 GB
-                     "snap-fitness",     // 0 B
-                     "galactic-cyber",   // 0 GB
-                     "aerocorp",         // 0 GB
-                     "omnia",            // 16 GB
-                     "defcomm",          // 0 GB
-                     "icarus",           // 0 GB
-                     "solaris",          // 16 GB
-                     "infocomm",         // 0 GB
-                     "taiyang-digital",  // 0 GB
-                     "deltaone",         // 0 GB
-                     "zeus-med"          // 0 GB
-    ];
+    // read contents of the server list file
+    const fileContents = ns.read('servers.txt');
+    // split the file contents into lines
+    const servers = fileContents
+        .split('\n') // split up each line
+        .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
+        .filter(line => line.length > 0); // remove empty lines
+    //ns.tprint(servers);
+
+    const newFileContents = ns.read('servers-no-ram.txt');
+    const newServers = newFileContents
+        .split('\n') // split up each line
+        .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
+        .filter(line => line.length > 0); // remove empty lines
+    // add to servers array
+    servers.push(...newServers);
+    //ns.tprint(servers);
+    
 
 
     // calculate total script ram usage
-    let ram_req = 0;
-    for (let i=0; i < files.length; ++i) {
-      ram_req += ns.getScriptRam(files[i]);
-    }
+    //let ram_req = 0;
+    //for (let i=0; i < files.length; ++i) {
+    //  ram_req += ns.getScriptRam(files[i]);
+    //}
+    let ram_req = files.reduce((total, file) => total + ns.getScriptRam(file), 0);
     //ns.tprint(`total script ram required: ${ram_req}\n\n`);
     
     // variable to see how many servers are affected
