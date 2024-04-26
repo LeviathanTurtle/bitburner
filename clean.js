@@ -1,74 +1,34 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    // Array of all servers that have the main .js files
-    const servers = ["n00dles",
-                     "foodnstuff",
-                     "sigma-cosmetics",
-                     "joesguns",
-                     "nectar-net",
-                     "hong-fang-tea",
-                     "harakiri-sushi",
-                     "max-hardware",
-                     "neo-net",
-                     "zer0",
-                     "iron-gym",
-//                     "CSEC",
-                     "phantasy",
-                     "omega-net",
-                     "silver-helix",
-                     "the-hub",
-//                     "avmnite-02h",
-//                     "johnson-ortho",
-//                     "crush-fitness",
-                     "netlink",
-//                     "computek",
-                     "summit-uni",
-                     "catalyst",
-//                     "I.I.I.I",
-                     "rothman-uni",
-//                     "syscore",
-                     "zb-institute",
-                     "lexo-corp",
-                     "aevum-police",
-                     "millenium-fitness",
-//                     "galactic-cyber",
-//                     "aerocorp",
-                     "omnia",
-//                     "defcomm",
-//                     "icarus",
-//                     "zb-def",
-//                     "nova-med",
-                     "unitalife",
-                     "univ-energy",
-                     "solaris",
-//                     "infocomm",
-//                     "taiyang-digital",
-                     "global-pharm",
-//                     "deltaone",
-//                     "zeus-med",
-                     "alpha-ent",
-                     "rho-construction",
-//                     "snap-fitness"
-    ];
+    // read contents of the server list file
+    const fileContents = ns.read('servers.txt');
+    // split the file contents into lines
+    const servers = fileContents
+        .split('\n') // split up each line
+        .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
+        .filter(line => line.length > 0); // remove empty lines
+    //ns.tprint(servers);
 
-    for (let i = 0; i < servers.length; ++i) {
+
+    //for (let i = 0; i < servers.length; ++i) {
+    for (const serv of servers) {
       // these are in if statements to avoid deleting files
       // that aren't actually there
-      if (ns.fileExists("weaken-template.js",servers[i])) {
-        ns.tprint(`Deleting weaken-template.js from ${servers[i]}`);
-        ns.rm("weaken-template.js",servers[i]);
+      if (ns.fileExists("weaken-template.js",serv/*ers[i]*/)) {
+        ns.tprint(`Deleting weaken-template.js from ${serv/*ers[i]*/}`);
+        ns.rm("weaken-template.js",serv/*ers[i]*/);
         //await ns.sleep(250);
       }
 
-      if (ns.fileExists("grow-template.js",servers[i])) {
-        ns.tprint(`Deleting grow-template.js from ${servers[i]}`);
-        ns.rm("grow-template.js.js",servers[i]);
+      if (ns.fileExists("grow-template.js",serv/*ers[i]*/)) {
+        ns.tprint(`Deleting grow-template.js from ${serv/*ers[i]*/}`);
+        ns.rm("grow-template.js.js",serv/*ers[i]*/);
         //await ns.sleep(250);
       }
 
-      if (ns.fileExists("hack-template.js",servers[i])) {
-        ns.tprint(`Deleting hack-template.js from ${servers[i]}`);
-        ns.rm("hack-template.js.js",servers[i]);
+      if (ns.fileExists("hack-template.js",serv/*ers[i]*/)) {
+        ns.tprint(`Deleting hack-template.js from ${serv/*ers[i]*/}`);
+        ns.rm("hack-template.js.js",serv/*ers[i]*/);
         //await ns.sleep(250);
       }
     }

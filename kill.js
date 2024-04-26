@@ -1,58 +1,17 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    // Array of all servers that have the main .js files
-    const servers = ["n00dles",
-                     "foodnstuff",
-                     "sigma-cosmetics",
-                     "joesguns",
-                     "nectar-net",
-                     "hong-fang-tea",
-                     "harakiri-sushi",
-                     "max-hardware",
-                     "neo-net",
-                     "zer0",
-                     "iron-gym",
-//                     "CSEC",
-                     "phantasy",
-                     "omega-net",
-                     "silver-helix",
-                     "the-hub",
-//                     "avmnite-02h",
-//                     "johnson-ortho",
-//                     "crush-fitness",
-                     "netlink",
-//                     "computek",
-                     "summit-uni",
-                     "catalyst",
-//                     "I.I.I.I",
-                     "rothman-uni",
-//                     "syscore",
-                     "zb-institute",
-                     "lexo-corp",
-                     "aevum-police",
-                     "millenium-fitness",
-//                     "galactic-cyber",
-//                     "aerocorp",
-                     "omnia",
-//                     "defcomm",
-//                     "icarus",
-//                     "zb-def",
-//                     "nova-med",
-                     "unitalife",
-                     "univ-energy",
-                     "solaris",
-//                     "infocomm",
-//                     "taiyang-digital",
-                     "global-pharm",
-//                     "deltaone",
-//                     "zeus-med",
-                     "alpha-ent",
-                     "rho-construction",
-//                     "snap-fitness"
-    ];
+    // read contents of the server list file
+    const fileContents = ns.read('servers.txt');
+    // split the file contents into lines
+    const servers = fileContents
+        .split('\n') // split up each line
+        .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
+        .filter(line => line.length > 0); // remove empty lines
+    //ns.tprint(servers);
 
-    for (let i = 0; i < servers.length; ++i) {
-      switch (servers[i]) {
+    //for (let i = 0; i < servers.length; ++i) {
+    for (const serv of servers) {
+      switch (serv/*ers[i]*/) {
         case "home":
           //const master = ns.getRunningScript("master.js","home");
           //if (!master) {
@@ -88,7 +47,7 @@ export async function main(ns) {
           break;
 
         default:
-          ns.killall(servers[i]);
+          ns.killall(serv/*ers[i]*/);
       }
     }
 
