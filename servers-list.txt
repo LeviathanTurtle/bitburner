@@ -23,7 +23,7 @@ const servers2Port = ["phantasy",            // 32 GB
 //    faction           "avmnite-02h",         // 64 GB
 //                      "johnson-ortho",       // 0 GB
 //                      "crush-fitness"        // 0 GB
-                      "zb-institute"         // 128 GB
+                      "zb-institute"         // 128 GB              ?
 ];
 
 const servers3Port = ["netlink",             // 64 GB
@@ -48,9 +48,10 @@ const servers4Port = [//"syscore"              // 0 GB
 //                    "snap-fitness",          // 0 GB
 //    faction           "run4theh111z",        // 64 GB
                       "."                    // 16 GB -- no $
+                      "applied-energetics"   // 0 GB
 ];
 
-const servers5Port = ["zb-institute",      // 64 GB
+const servers5Port = ["zb-institute",      // 64 GB                  ?
 //                      "galactic-cyber",    // 0 GB
 //                      "aerocorp",          // 0 GB
                       "omnia",             // 16 GB
@@ -68,6 +69,15 @@ const servers5Port = ["zb-institute",      // 64 GB
                       "microdyne",         // 16 GB
                       "powerhouse-fitness",// 64 GB
                       "helios",            // 32 GB
-                      "omnitek"            // 512 GB
+                      "omnitek",           // 512 GB
+//                      "stormtech",         // 0 GB
+//                      "nwo",               // 0 GB
+//                      "clarkinc",          // 0 GB
+//                      "ecorp",             // 0 GB
+//                      "The-Cave",          // 0 GB
+//                      "kuai-gong",         // 0 GB
+//                      "b-and-a",           // 0 GB
+//                      "megacorp",          // 0 GB
+//                      "fulcrumassets",     // 0 GB
 ];
 
