@@ -18,7 +18,6 @@ stormtech
 nwo
 clarkinc
 ecorp
-The-Cave
 kuai-gong
 b-and-a
 megacorp
