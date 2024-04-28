@@ -74,6 +74,7 @@ const servers5Port = ["zb-institute",      // 64 GB                  ?
 //                      "nwo",               // 0 GB
 //                      "clarkinc",          // 0 GB
 //                      "ecorp",             // 0 GB
+                      "4sigma",            // 0 GB
 //    faction           "The-Cave",          // 0 GB
 //                      "kuai-gong",         // 0 GB
 //                      "b-and-a",           // 0 GB
