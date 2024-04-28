@@ -63,6 +63,10 @@ export async function main(ns, ram) {
         ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
         hackable = false;
       }
+      if (ns.serverExists(`pserv-${i}-${serv}`)) {
+        ns.tprint(`Private server for ${serv} already exists\n\n`);
+        hackable = false;
+      }
 
       
       // we can hack the server
@@ -87,7 +91,7 @@ export async function main(ns, ram) {
             if (threads > 0) {
                 ns.tprint(`Launching scripts '${files}' on ${hostname} with ${threads} threads in 1s...`);
                 await ns.sleep(1000);
-                await execFiles(ns, files, hostname, threads);
+                await execFiles(ns, files, serv, threads);
 
                 ns.tprint(`All files successfully running on ${hostname}\n\n`);
             } else {
