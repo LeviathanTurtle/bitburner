@@ -46,8 +46,8 @@ export async function main(ns) {
       let hackable = true;
 
       // announce this portion
-      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
-      await ns.sleep(2000);
+      ns.tprint(`Next server: ${serv}. Beginning in 1s...`);
+      await ns.sleep(1000);
 
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
@@ -103,8 +103,8 @@ export async function main(ns) {
               // if we have a valid thread count, proceed as normal
               if (threads > 0) {
                   // execute scripts
-                  ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
-                  await ns.sleep(1000);
+                  ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in .5s...`);
+                  await ns.sleep(500);
                   await execFiles(ns, files, serv, threads);
 
                   // update affected server list and count
@@ -141,7 +141,7 @@ async function execFiles(ns, files, target, threads) {
           // successful start
           if (ns.exec(file, target, threads)) {
               ns.tprint(`File ${file} running on ${target}`);
-              setTimeout(() => executeFile(fileIndex + 1), 1000); // Execute next file after 1 second
+              setTimeout(() => executeFile(fileIndex + 1), 500); // Execute next file after .5 second
           }
           // could not execute file
           else {
@@ -178,31 +178,31 @@ async function access(ns, server, num_ports) {
         switch (program) {
             case "BruteSSH.exe":
                 ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
+                await ns.sleep(500);
                 ns.brutessh(server);
                 break;
 
             case "FTPCrack.exe":
                 ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
+                await ns.sleep(500);
                 ns.ftpcrack(server);
                 break;
 
             case "RelaySMTP.exe":
                 ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
+                await ns.sleep(500);
                 ns.relaysmtp(server);
                 break;
 
             case "HTTPWorm.exe":
                 ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
+                await ns.sleep(500);
                 ns.httpworm(server);
                 break;
 
             case "SQLInject.exe":
                 ns.tprint(`SQLInject-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
+                await ns.sleep(500);
                 ns.sqlinject(server);
                 break;
         }
@@ -210,7 +210,7 @@ async function access(ns, server, num_ports) {
 
     // 
     ns.tprint(`Nuking ${server} in 1s...`);
-    await ns.sleep(1000);
+    await ns.sleep(500);
     ns.nuke(server);
     return true;
 }

@@ -54,18 +54,27 @@ export async function main(ns/*, affected_servers*/) {
         let hackable = true;
 
         // announce this portion
-        ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
-        await ns.sleep(2000);
+        ns.tprint(`Next server: ${serv}. Beginning in 1s...`);
+        await ns.sleep(1000);
 
         // check for current hack level vs. server
-        if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv) || !ns.hasRootAccess(serv)) {
+        if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
           ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
           hackable = false;
         }
+        // filter out n00dles
+        if (serv == "n00dles") {
+          ns.tprint("Skipping n00dles.");
+          hackable = false;
+        } // move this to the array reading
 
         if (hackable && threads > 0) {
-          ns.tprint(`Launching scripts '${files}' on home with ${threads} threads in 1s...`);
-          await ns.sleep(1000);
+          if (!ns.hasRootAccess(serv)) {
+            await access(ns,serv,ns.getServerNumPortsRequired(serv));
+          }
+          
+          ns.tprint(`Launching scripts '${files}' on home with ${threads} threads in .5s...`);
+          await ns.sleep(500);
 
           await execFiles(ns, files, serv, threads);
 
@@ -95,7 +104,7 @@ async function execFiles(ns, files, target, threads) {
             //if (ns.exec(file, "home", threads, ...target)) {
             if (ns.run(file,threads,target)) {
                 ns.tprint(`File ${file} running on home`);
-                setTimeout(() => executeFile(fileIndex + 1), 1000); // Execute next file after 1 second
+                setTimeout(() => executeFile(fileIndex + 1), 500); // Execute next file after .5 second
             }
             // could not execute file
             else {
@@ -108,3 +117,63 @@ async function execFiles(ns, files, target, threads) {
     });
 }
 
+
+
+async function access(ns, server, num_ports) {
+    // array of required programs
+    const programs = [
+        "BruteSSH.exe",
+        "FTPCrack.exe",
+        "RelaySMTP.exe",
+        "HTTPWorm.exe",
+        "SQLInject.exe"
+    ];
+
+    // iterate over the programs up to the number of ports required
+    for (let i = 0; i < num_ports; i++) {
+        const program = programs[i];
+        // check if the required program exists
+        if (!ns.fileExists(program, "home")) {
+            ns.tprint(`Required program ${program} not found.`);
+            return false;
+        }
+        // execute the corresponding program
+        switch (program) {
+            case "BruteSSH.exe":
+                ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(500);
+                ns.brutessh(server);
+                break;
+
+            case "FTPCrack.exe":
+                ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(500);
+                ns.ftpcrack(server);
+                break;
+
+            case "RelaySMTP.exe":
+                ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(500);
+                ns.relaysmtp(server);
+                break;
+
+            case "HTTPWorm.exe":
+                ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(500);
+                ns.httpworm(server);
+                break;
+
+            case "SQLInject.exe":
+                ns.tprint(`SQLInject-ing ${server} (${num_ports} ports) in 1s...`);
+                await ns.sleep(500);
+                ns.sqlinject(server);
+                break;
+        }
+    }
+
+    // 
+    ns.tprint(`Nuking ${server} in 1s...`);
+    await ns.sleep(500);
+    ns.nuke(server);
+    return true;
+}
