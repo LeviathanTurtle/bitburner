@@ -12,11 +12,18 @@ These are my own words and my understanding (which could be wrong), so if you ar
 
 The game also offers different types of minigames to accomplish tasks for more money, but I have not explored those yet.
 
+The game has a 'prestige' mechanic known as augmentations. You can buy these from factions to improve your skill progression, reducec main function (`hack`,`weaken`,`grow`) time, increase production of certain things, or decrease costs of certain things. Installing augmentations resets you back to the beginning, so having a master script to start however many scripts you have is very handy. 
+
 After reading the in-game documentation (highly recommended), I took some of the code provided in it. I started with that, then as I learned I started to develop my own scripts. This repository is just a collection of the scripts I've made while playing the game. This is in its own mini repository because I felt that it didn't fit in my other repositories. 
 
-## DIRECTORIES:
-- LAB: a sort of 'staging' folder where changes are made
-- Archive: old files that have been improved or no longer used
+## USAGE:
+To my knowledge, the game does not support making folders for organization. To be fair, I have only tried `mkdir` and not looked into other alternatives (if any). Because of this, the home directory in the game can look like a bit of a mess with the scripts you make and the periodic messages you get that are saved. For readability and ease-of-understanding, I have organized this repository into different sections:
+- LAB: a sort of 'staging' folder where changes are made (I only use this here)
+- Archive: old files that have been improved or no longer used (I only use this here)
+- Data: server data files used as input
+- src: main scripts that are run (excluding `master.js`)
+
+As mentioned earlier, having a master script is pretty handy when installing augmentations. `master.js` is this script. It should be noted that the way the scripts are set up assumes all files are in the same directory, so if you wanted to run this, you would need to either update the file paths in the scripts, or move everything into one folder. I believe the main functions should only work in-game, so running any scripts outside of it should have no effect.
 
 # TO DO:
 - offload `files` array to separate file, and use I/O in scripts
@@ -25,7 +32,7 @@ After reading the in-game documentation (highly recommended), I took some of the
 # DONE:
 - offload `servers` array to separate file (data file) and updated `script_startup.js` to read input from file (4.24.2024)
 - in `script_startup.js`, reduce the number of for-loops (4.24.2024)
-- ADAPTATION: return an array of servers affected in `script_startup.js` to be used with `home-script_startup.js`
-    - Instead, output affected servers to an `affected_servers` data file, to be read in `home-script_startup.js` (In progress)
 - ADAPTATION: incorporate `no-ram-script_startup.js` into `master.js`
-    - Instead, added servers with no ram to list of servers used by `home-script_startup.js`
+    - Instead, added servers with no ram to list of servers used by `home-script_startup.js` (?4.26.2024)
+
+- SCRAPPED: return an array of servers affected in `script_startup.js` to be used with `home-script_startup.js`
