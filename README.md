@@ -6,6 +6,7 @@ The basic premise is to gain money by hacking servers (or other ways). Hacking a
 - `ns.hack()` -- hacks the server, giving you a portion of the money on it
 - `ns.weaken()` -- weaken the server's security, making it easier to hack the next time
 - `ns.grow()` -- inflate the funds on the server, giving the server more money for you to hack
+
 These are my own words and my understanding (which could be wrong), so if you are at all confused, I encourage you to read the documentation found in game or from the following sources:
 - https://github.com/bitburner-official/bitburner-src
 - https://bitburner.readthedocs.io/en/latest/index.html
