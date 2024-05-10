@@ -26,11 +26,11 @@ To my knowledge, the game does not support making folders for organization. To b
 
 As mentioned earlier, having a master script is pretty handy when installing augmentations. `master.js` is this script. It should be noted that the way the scripts are set up assumes all files are in the same directory, so if you wanted to run this, you would need to either update the file paths in the scripts, or move everything into one folder. I believe the main functions should only work in-game, so running any scripts outside of it should have no effect.
 
-# TO DO:
+## TO DO:
 - offload `files` array to separate file, and use I/O in scripts
 - output log statements to separate files
 
-# DONE:
+## DONE:
 - offload `servers` array to separate file (data file) and updated `script_startup.js` to read input from file (4.24.2024)
 - in `script_startup.js`, reduce the number of for-loops (4.24.2024)
 - ADAPTATION: incorporate `no-ram-script_startup.js` into `master.js`
