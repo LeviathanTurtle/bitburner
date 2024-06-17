@@ -140,31 +140,31 @@ async function access(ns, server, num_ports) {
         // execute the corresponding program
         switch (program) {
             case "BruteSSH.exe":
-                ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 1s...`);
+                ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in .5s...`);
                 await ns.sleep(500);
                 ns.brutessh(server);
                 break;
 
             case "FTPCrack.exe":
-                ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 1s...`);
+                ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in .5s...`);
                 await ns.sleep(500);
                 ns.ftpcrack(server);
                 break;
 
             case "RelaySMTP.exe":
-                ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 1s...`);
+                ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in .5s...`);
                 await ns.sleep(500);
                 ns.relaysmtp(server);
                 break;
 
             case "HTTPWorm.exe":
-                ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in 1s...`);
+                ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in .5s...`);
                 await ns.sleep(500);
                 ns.httpworm(server);
                 break;
 
             case "SQLInject.exe":
-                ns.tprint(`SQLInject-ing ${server} (${num_ports} ports) in 1s...`);
+                ns.tprint(`SQLInject-ing ${server} (${num_ports} ports) in .5s...`);
                 await ns.sleep(500);
                 ns.sqlinject(server);
                 break;

@@ -63,58 +63,58 @@ export async function main(ns) {
         switch (serv) {
             // n00dles is a baby server (4 GB RAM) so use early-hack-template instead
             case "n00dles":
-              // copy file to server
-              ns.scp("early-hack-template.js",serv);
+                // copy file to server
+                ns.scp("early-hack-template.js",serv);
 
-              // if we don't have root access, fix that
-              if (!ns.hasRootAccess(serv)) {
-                await access(ns,serv,ns.getServerNumPortsRequired(serv));
-              } // there's no nested `if` here because this should always 
+                // if we don't have root access, fix that
+                if (!ns.hasRootAccess(serv)) {
+                  await access(ns,serv,ns.getServerNumPortsRequired(serv));
+                } // there's no nested `if` here because this should always 
 
-              // launch scripts on server
-              ns.tprint(`Launching script 'early-hack-template.js' on ${serv} with 1 thread`);
-              ns.exec("early-hack-template.js", serv);
-              ns.tprint(`early-hack-template.js successfully running on ${serv}\n\n`);
+                // launch scripts on server
+                ns.tprint(`Launching script 'early-hack-template.js' on ${serv} with 1 thread`);
+                ns.exec("early-hack-template.js", serv);
+                ns.tprint(`early-hack-template.js successfully running on ${serv}\n\n`);
 
-              // increment affected servers counter
-              affect_server_count++;
-              // add to list of affected servers
-              affected_servers.push(serv);
+                // increment affected servers counter
+                affect_server_count++;
+                // add to list of affected servers
+                affected_servers.push(serv);
 
-              break;
+                break;
             
             // literally anything else
             default:
-              // copy file to server
-              if (ns.scp(files,serv)) {
-                ns.tprint(`copied files to ${serv}`);
-              } else {
-                ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
-              }
-
-              // check that we have root access
-              if (!ns.hasRootAccess(serv)) {
-                if (!await access(ns,serv,ns.getServerNumPortsRequired(serv))) {
-                  ns.tprint(`Affected servers: ${affect_server_count}`);
-                  return affected_servers;
+                // copy file to server
+                if (ns.scp(files,serv)) {
+                    ns.tprint(`copied files to ${serv}`);
+                } else {
+                    ns.tprint(`scp failed to copy files ${files} to server ${serv}`);
                 }
-              }
 
-              // if we have a valid thread count, proceed as normal
-              if (threads > 0) {
-                  // execute scripts
-                  ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in .5s...`);
-                  await ns.sleep(500);
-                  await execFiles(ns, files, serv, threads);
+                // check that we have root access
+                if (!ns.hasRootAccess(serv)) {
+                    if (!await access(ns,serv,ns.getServerNumPortsRequired(serv))) {
+                        ns.tprint(`Affected servers: ${affect_server_count}`);
+                        return affected_servers;
+                    }
+                }
 
-                  // update affected server list and count
-                  affect_server_count++;
-                  affected_servers.push(serv);
+                // if we have a valid thread count, proceed as normal
+                if (threads > 0) {
+                    // execute scripts
+                    ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in .5s...`);
+                    await ns.sleep(500);
+                    await execFiles(ns, files, serv, threads);
 
-                  ns.tprint(`All files successfully running on ${serv}\n\n`);
-              } else { // not a valid thread count, cannot proceed
-                ns.tprint(`Files not running on ${serv} due to invalid thread count (<= 0)\n\n`);
-              }
+                    // update affected server list and count
+                    affect_server_count++;
+                    affected_servers.push(serv);
+
+                    ns.tprint(`All files successfully running on ${serv}\n\n`);
+                } else { // not a valid thread count, cannot proceed
+                    ns.tprint(`Files not running on ${serv} due to invalid thread count (<= 0)\n\n`);
+                }
           }
       }
   }

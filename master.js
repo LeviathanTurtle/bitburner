@@ -21,7 +21,7 @@ export async function main(ns) {
 
   // ram req:
   const scriptPID2 = ns.exec("home-script_startup.js","home");
-  await ns.sleep(1000);
+  //await ns.sleep(1000);
   //ns.run(`home-script_startup.js ${affected_servers}`);
   // while script_startup.js is running, sleep
   while (ns.isRunning(scriptPID2, "home", "home-script_startup.js")) {
@@ -30,5 +30,5 @@ export async function main(ns) {
 
 
   // ram req: 
-  ns.exec("purchase-server-template.js","home");
+  //ns.exec("purchase-server-template.js","home");
 }
