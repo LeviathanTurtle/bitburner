@@ -13,7 +13,7 @@ These are my own words and my understanding (which could be wrong), so if you ar
 
 The game also offers different types of minigames to accomplish tasks for more money, but I have not explored those yet.
 
-The game has a 'prestige' mechanic known as augmentations. You can buy these from factions to improve your skill progression, reducec main function (`hack`,`weaken`,`grow`) time, increase production of certain things, or decrease costs of certain things. Installing augmentations resets you back to the beginning, so having a master script to start however many scripts you have is very handy. 
+The game has a 'prestige' mechanic known as augmentations. You can buy these from factions to improve your skill progression, reduce main function (`hack`,`weaken`,`grow`) time, increase production of certain things, or decrease costs of certain things. Installing augmentations resets you back to the beginning, so having a master script to start however many scripts you have is very handy. 
 
 After reading the in-game documentation (highly recommended), I took some of the code provided in it. I started with that, then as I learned I started to develop my own scripts. This repository is just a collection of the scripts I've made while playing the game. This is in its own mini repository because I felt that it didn't fit in my other repositories. 
 
