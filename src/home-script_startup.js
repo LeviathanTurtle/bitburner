@@ -3,7 +3,7 @@ export async function main(ns) {
     // array of main files to copy and use
     const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
 
-    // --- GET LIST OF SERVERS -----------------------
+    // --- GET LIST OF SERVERS ------------------
     // read contents of the server list file
     const fileContents = ns.read('servers.txt');
 
@@ -22,14 +22,14 @@ export async function main(ns) {
 
     ns.printf("Servers: %s", servers)
     
-    // --- CALCULATE MAX THREADS -----------------------
+    // --- CALCULATE MAX THREADS ----------------
     // calculate total script ram usage
     let ram_req = files.reduce((total, file) => total + ns.getScriptRam(file), 0);
     ns.printf("total script ram required: %d", ram_req);
 
     let threads = Math.floor((ns.getServerMaxRam("home") - ns.getServerUsedRam("home") - 4) / ram_req / servers.length);
 
-    // --- RUN SCRIPTS FROM HOME -----------------------
+    // --- RUN SCRIPTS FROM HOME ----------------
     for (let i=0; i < servers.length; ++i) {
         const serv = servers[i];
 
