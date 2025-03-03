@@ -1,20 +1,21 @@
 /** @param {NS} ns */
 export async function main(ns) {
+    ns.tail();
+    
     // array of main files to copy and use
     const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
 
     // --- GET LIST OF SERVERS ------------------
     // read contents of the server list file
     const fileContents = ns.read('servers.txt');
+    const fileContents2 = ns.read('servers-no-ram.txt');
 
     // split the file contents into lines
     const servers = fileContents
         .split('\n') // split up each line
         .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
         .filter(line => line.length > 0 && line !== "n00dles"); // remove empty lines and n00dles
-
-    const newFileContents = ns.read('servers-no-ram.txt');
-    const newServers = newFileContents
+    const newServers = fileContents2
         .split('\n')
         .map(line => line.trim()) 
         .filter(line => line.length > 0);
@@ -80,12 +81,12 @@ async function execFiles(ns, files, target, threads) {
             const file = files[fileIndex];
             // successful start
             if (ns.run(file,threads,target)) {
-                ns.print("File '%s' running on home", file);
+                ns.printf("File '%s' running on home", file);
                 setTimeout(() => executeFile(fileIndex + 1), 500); // Execute next file after .5 second
             }
             // could not execute file
             else {
-                ns.print("Failed to start file '%s' on home", file);
+                ns.printf("Failed to start file '%s' on home", file);
                 setTimeout(() => executeFile(fileIndex), 1000); // Retry current file after 1 second
             }
         };
@@ -98,13 +99,16 @@ async function execFiles(ns, files, target, threads) {
 
 async function access(ns, server, num_ports) {
     // map of required programs IN ORDER
-    const programs = {
+    const exploits = {
         "BruteSSH.exe": ns.brutessh,
         "FTPCrack.exe": ns.ftpcrack,
         "RelaySMTP.exe": ns.relaysmtp,
         "HTTPWorm.exe": ns.httpworm,
         "SQLInject.exe": ns.sqlinject
     };
+
+    // Convert keys to an ordered array
+    const programs = Object.keys(exploits);
 
     // iterate over the programs up to the number of ports required
     for (let i=0; i < num_ports; i++) {
