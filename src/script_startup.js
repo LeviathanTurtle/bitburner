@@ -18,7 +18,7 @@ export async function main(ns) {
         .split('\n') // split up each line
         .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
         .filter(line => line.length > 0); // remove empty lines
-    ns.printf("Servers: %s", servers)
+    ns.printf("Servers: %s", servers);
   
     // --- CALCULATE REQUIRED RAM -----------------------
     // calculate total script ram usage

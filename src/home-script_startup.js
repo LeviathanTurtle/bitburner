@@ -81,12 +81,12 @@ async function execFiles(ns, files, target, threads) {
             const file = files[fileIndex];
             // successful start
             if (ns.run(file,threads,target)) {
-                ns.printf("File '%s' running on home", file);
+                //ns.printf("File '%s' running on home", file);
                 setTimeout(() => executeFile(fileIndex + 1), 500); // Execute next file after .5 second
             }
             // could not execute file
             else {
-                ns.printf("Failed to start file '%s' on home", file);
+                //ns.printf("Failed to start file '%s' on home", file);
                 setTimeout(() => executeFile(fileIndex), 1000); // Retry current file after 1 second
             }
         };

@@ -1,12 +1,5 @@
 /** @param {NS} ns */
 
-// 5.75 GB total RAM across 3 scripts
-// 16 GB : 2 threads each (4.5 free)
-// 32 GB : 5 threads each (3.25 free)
-// 64 GB : 11 threads each (.75 free)
-// 128 GB : 22 threads each (1.5 free)
-// 256 GB : ...
-
 // Several servers have 0 GB RAM available. This means that scripts cannot be run
 // on those servers. Instead, they must be running on a separate server. This
 // script purchases a new private server, uploads the main 3 attacking scripts,
@@ -18,25 +11,21 @@
 /*
 var currentServers = getPurchasedServers();
 
-for (var i = 0; i < currentServers.length; ++i) {
-    var serv = currentServers[i];
-    scriptKill("early-hack-template.script", serv);
+for (const serv of currentServers) {
+    killall(serv);
     deleteServer(serv);
 }
 */
 
 export async function main(ns, ram) {
+    ns.tail();
+
     // array of main files to copy and use
     const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
-    //ns.tprint(`TEST: ns.getHostName = ${ns.getHostname()}`);
-
-    // calculate total script ram usage
-    let ram_req = files.reduce((total, file) => total + ns.getScriptRam(file), 0);
-    //ns.tprint(`total script ram required: ${ram_req}\n\n`);
 
     // How much RAM each purchased server will have
-    //const ram = 64;
-    ram = ns.args.length > 0 ? ns.args[0] : 64; // default of 64 GB RAM serv
+    ram = ns.args.length > 0 ? ns.args[0] : 64;
+    ram_req = files.reduce((total, file) => total + ns.getScriptRam(file), 0);
 
     // read contents of the server list file
     const fileContents = ns.read('servers-no-ram.txt');
@@ -45,10 +34,10 @@ export async function main(ns, ram) {
         .split('\n') // split up each line
         .map(line => line.trim()) // remove any leading/trailing whitespace (\r)
         .filter(line => line.length > 0); // remove empty lines
-    //ns.tprint(servers);
+    ns.printf("Servers: %s", servers);
 
 
-    // Sort `servers_no_ram` from lowest hacking level to highest
+    // Sort "servers_no_ram" from lowest hacking level to highest
     servers_no_ram.sort((a, b) => {
         // Get the required hacking level for each server
         const hackingLevelA = ns.getServerRequiredHackingLevel(a);
@@ -68,17 +57,17 @@ export async function main(ns, ram) {
         // bool to determine if the current server is hackable
         let hackable = true;
 
-
         // check for current hack level vs. server
         if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
-            ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
+            ns.printf("Current server %s is not currently hackable\n", serv);
             hackable = false;
         }
+
         // if the prv server for this server already exists, restart
         if (ns.serverExists(`pserv-${i}-${serv}`)) {
             hackable = false;
             let prv_serv = `pserv-${i}-${serv}`;
-            ns.tprint(`Private server for ${serv} already exists. Resetting scripts`);
+            ns.printf("Private server for %s already exists. Resetting scripts", serv);
 
             ns.killall(prv_serv);
             // remove files
@@ -97,40 +86,41 @@ export async function main(ns, ram) {
             let threads = Math.floor((ns.getServerMaxRam(prv_serv) - ns.getServerUsedRam(prv_serv)) / ram_req);
             await execFiles(ns, files, prv_serv, serv, threads);
 
-            ns.tprint(`All files successfully running on ${serv}\n\n`);
+            ns.printf("All files successfully running on %s\n", serv);
         }
+
         // check that we have root access
         if (!ns.hasRootAccess(serv)) {
             await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        
         // we can hack the server
         if (hackable) {
             // Check if we have enough money to purchase a server
             if (ns.getServerMoneyAvailable("home") > ns.getPurchasedServerCost(ram)) {
                 // 1. announce purchase, purchase server 
-                ns.tprint(`Purchasing ${ram} GB server to attack ${serv} in 1s...`);
+                ns.printf("Purchasing %d GB server to attack %s", ram, serv);
                 await ns.sleep(1000);
                 let hostname = ns.purchaseServer(`pserv-${i}-${serv}`, ram);
 
                 // 2. copy files to new server
-                if (ns.scp(files,hostname)) {
-                    ns.tprint(`copied files to ${hostname}`);
-                } else {
-                    ns.tprint(`scp failed to copy files ${files} to server ${hostname}`);
+                ns.scp(files,hostname)
+
+                // check that we have root access
+                if (!ns.hasRootAccess(serv)) {
+                  await access(ns,serv,ns.getServerNumPortsRequired(serv));
                 }
                 
                 // 3. execute scripts with max threads
                 let threads = Math.floor((ns.getServerMaxRam(hostname) - ns.getServerUsedRam(hostname)) / ram_req);
                 if (threads > 0) {
-                    ns.tprint(`Launching scripts '${files}' on ${hostname} with ${threads} threads in 1s...`);
+                    ns.printf("Launching scripts '%s' on %s with %d threads", files, hostname, threads);
                     await ns.sleep(1000);
                     await execFiles(ns, files, hostname, serv, threads);
 
-                    ns.tprint(`All files successfully running on ${hostname}\n\n`);
+                    ns.printf("All files successfully running on %s\n", hostname);
                 } else {
-                    ns.tprint(`Files not running on ${hostname} due to invalid thread count\n\n`);
+                    ns.printf("Files not running on %s due to invalid thread count (%d)\n", hostname, threads);
                 }
             }
         }
@@ -143,13 +133,13 @@ export async function main(ns, ram) {
         await ns.sleep(1000);
     }
 
-    ns.tprint("DONE -- purchasing private servers to attack no-memory servers");
+    ns.print("DONE -- purchasing private servers to attack no-memory servers");
     return;
 }
 
 
 
-async function execFiles(ns, files, serv, target, threads) {
+async function execFiles(ns, files, server, target, threads) {
     return new Promise(resolve => {
         const executeFile = async (fileIndex) => {
             if (fileIndex >= files.length) {
@@ -159,15 +149,14 @@ async function execFiles(ns, files, serv, target, threads) {
             
             const file = files[fileIndex];
             // successful start
-            //if (ns.exec(file, "home", threads, ...target)) {
-            if (ns.run(file,threads,target)) {
-                ns.tprint(`File ${file} running on ${serv}`);
-                setTimeout(() => executeFile(fileIndex + 1), 1000); // execute next file after 1 second
+            if (ns.exec(file,server,threads,target)) {
+                //ns.printf("File '%s' running on home", file);
+                setTimeout(() => executeFile(fileIndex + 1), 500); // Execute next file after .5 second
             }
             // could not execute file
             else {
-                ns.tprint(`Failed to start file ${file} on ${serv}`);
-                setTimeout(() => executeFile(fileIndex), 1000); // retry current file after 1 second
+                //ns.printf("Failed to start file '%s' on home", file);
+                setTimeout(() => executeFile(fileIndex), 1000); // Retry after 1 second
             }
         };
 
@@ -177,60 +166,39 @@ async function execFiles(ns, files, serv, target, threads) {
 
 
 async function access(ns, server, num_ports) {
-    // array of required programs
-    const programs = [
-        "BruteSSH.exe",
-        "FTPCrack.exe",
-        "RelaySMTP.exe",
-        "HTTPWorm.exe",
-        "SQLInject.exe"
-    ];
+    // map of required programs IN ORDER
+    const exploits = {
+        "BruteSSH.exe": ns.brutessh,
+        "FTPCrack.exe": ns.ftpcrack,
+        "RelaySMTP.exe": ns.relaysmtp,
+        "HTTPWorm.exe": ns.httpworm,
+        "SQLInject.exe": ns.sqlinject
+    };
+
+    // Convert keys to an ordered array
+    const programs = Object.keys(exploits);
 
     // iterate over the programs up to the number of ports required
-    for (let i = 0; i < num_ports; i++) {
+    for (let i=0; i < num_ports; i++) {
         const program = programs[i];
+
         // check if the required program exists
         if (!ns.fileExists(program, "home")) {
-            ns.tprint(`Required program ${program} not found.`);
+            ns.printf("Required program '%s' not found.", program);
             return false;
         }
+
         // execute the corresponding program
-        switch (program) {
-            case "BruteSSH.exe":
-                ns.tprint(`BruteSSH-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
-                ns.brutessh(server);
-                break;
-
-            case "FTPCrack.exe":
-                ns.tprint(`FTPCrack-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
-                ns.ftpcrack(server);
-                break;
-
-            case "RelaySMTP.exe":
-                ns.tprint(`RelaySMTP-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
-                ns.relaysmtp(server);
-                break;
-
-            case "HTTPWorm.exe":
-                ns.tprint(`HTTPWorm-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
-                ns.httpworm(server);
-                break;
-
-            case "SQLInject.exe":
-                ns.tprint(`SQLInject-ing ${server} (${num_ports} ports) in 1s...`);
-                await ns.sleep(1000);
-                ns.sqlinject(server);
-                break;
+        if (exploits[program]) {
+            ns.printf("%s-ing %s (%d ports)", program.replace(".exe", ""), server, num_ports);
+            await ns.sleep(500);
+            exploits[program](server);
         }
     }
 
     // 
-    ns.tprint(`Nuking ${server} in 1s...`);
-    await ns.sleep(1000);
+    ns.printf("Nuking %s", server);
+    await ns.sleep(500);
     ns.nuke(server);
     return true;
 }
